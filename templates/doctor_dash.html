@@ -1,0 +1,521 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Doctor Dashboard{% endblock %}
+
+{% block main %}
+
+<style>
+
+/* GENERAL */
+
+* {
+    box-sizing: border-box;
+}
+
+.doctor-dashboard {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    background: #f4f7fb;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* DESKTOP SIDEBAR */
+
+.doctor-sidebar {
+    width: 220px;
+    min-width: 220px;
+    min-height: 100vh;
+    background: #102c46;
+    color: white;
+    padding: 25px 16px;
+    display: flex;
+    flex-direction: column;
+}
+
+.doctor-sidebar h2 {
+    font-size: 23px;
+    margin-bottom: 40px;
+    color: white;
+}
+
+.doctor-sidebar h2 span {
+    color: #36c6b4;
+}
+
+.sidebar-label {
+    color: #91a6b9;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+}
+
+.doctor-sidebar a {
+    display: block;
+    color: #dce7f0;
+    text-decoration: none;
+    padding: 13px 12px;
+    margin-bottom: 7px;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.25s;
+}
+
+.doctor-sidebar a:hover,
+.doctor-sidebar a.active {
+    background: #1d496b;
+    color: white;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+.doctor-sidebar .logout-link {
+    color: #ffaaaa;
+}
+
+.doctor-sidebar .logout-link:hover {
+    background: #49333b;
+}
+
+/* MOBILE NAVBAR */
+
+.mobile-navbar {
+    display: none;
+}
+
+.menu-toggle {
+    border: none;
+    background: transparent;
+    color: #102c46;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+/* MAIN CONTENT */
+
+.doctor-main {
+    flex: 1;
+    min-width: 0;
+    padding: 30px 35px;
+}
+
+/* HEADER */
+
+.doctor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.doctor-header h1 {
+    color: #102c46;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.doctor-header p {
+    color: #758596;
+    font-size: 14px;
+}
+
+.doctor-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #d9f3ef;
+    color: #087f75;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+/* OVERVIEW CARDS - TWO COLUMNS */
+
+.doctor-overview {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    margin-bottom: 28px;
+}
+
+.overview-card {
+    background: white;
+    padding: 25px;
+    border-radius: 13px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.overview-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.overview-icon {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.overview-card h3 {
+    color: #102c46;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.overview-card p {
+    color: #758596;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.overview-card a {
+    color: #079b91;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.overview-card a:hover {
+    color: #056d68;
+}
+
+/* DOCTOR PROFILE */
+
+.doctor-profile {
+    background: white;
+    padding: 25px 28px;
+    border-radius: 13px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.doctor-profile h2 {
+    color: #102c46;
+    font-size: 21px;
+    margin-bottom: 20px;
+}
+
+.profile-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 25px;
+}
+
+.profile-details p {
+    color: #536577;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.profile-details strong {
+    color: #344b61;
+}
+
+/* TABLET RESPONSIVE */
+
+@media (max-width: 1000px) {
+
+    .doctor-main {
+        padding: 22px;
+    }
+
+    .doctor-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* MOBILE RESPONSIVE */
+
+@media (max-width: 700px) {
+
+    .doctor-dashboard {
+        display: block;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    .mobile-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: white;
+        padding: 12px 20px;
+        height: 65px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: relative;
+        z-index: 1001;
+    }
+
+    .mobile-navbar h2 {
+        font-size: 22px;
+        color: #102c46;
+    }
+
+    .mobile-navbar h2 span {
+        color: #36c6b4;
+    }
+
+    .doctor-sidebar h2 {
+        display: none;
+    }
+
+    .doctor-sidebar {
+        display: none;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        width: 100%;
+        min-width: 0;
+        min-height: auto;
+        padding: 20px;
+        background: #102c46;
+        z-index: 1000;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+
+    .doctor-sidebar.show {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .doctor-sidebar .sidebar-label {
+        margin-top: 5px;
+    }
+
+    .doctor-sidebar a {
+        padding: 14px;
+        margin-bottom: 5px;
+    }
+
+    .doctor-sidebar .sidebar-bottom {
+        margin-top: 10px;
+    }
+
+    .doctor-main {
+        width: 100%;
+        padding: 22px 16px;
+    }
+
+    .doctor-header h1 {
+        font-size: 21px;
+    }
+
+    .doctor-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-details {
+        grid-template-columns: 1fr;
+    }
+}
+
+</style>
+
+
+<div class="doctor-dashboard">
+
+    <!-- MOBILE NAVBAR -->
+
+    <div class="mobile-navbar">
+
+        <h2>Clinic<span>Care</span></h2>
+
+        <button
+            type="button"
+            id="menuToggle"
+            class="menu-toggle"
+            aria-label="Toggle navigation"
+            aria-expanded="false">
+            ☰
+        </button>
+
+    </div>
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="doctor-sidebar" id="doctorSidebar">
+
+        <h2>Clinic<span>Care</span></h2>
+
+        <p class="sidebar-label">MAIN MENU</p>
+
+        <a href="/doctor_dashboard" class="active">
+            🏠 Dashboard
+        </a>
+
+        <a href="/patient_consult">
+            👥 Patient Consultation
+        </a>
+
+        <a href="/doctor_patient_history">
+            📋 Patients History
+        </a>
+
+        <div class="sidebar-bottom">
+
+            <a href="/logout" class="logout-link">
+                🚪 Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="doctor-main">
+
+        <!-- HEADER -->
+
+        <header class="doctor-header">
+
+            <div>
+
+                <h1>Welcome, {{ doctor.name }}</h1>
+
+                <p>Here's your clinic overview for today.</p>
+
+            </div>
+
+            <div class="doctor-avatar">
+                {{ doctor.name[0] }}
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD CARDS - TWO CARDS -->
+
+        <section class="doctor-overview">
+
+            <!-- PATIENTS -->
+
+            <div class="overview-card">
+
+                <div class="overview-icon">👥</div>
+
+                <h3>Patients</h3>
+
+                <p>Consultation your patients.</p>
+
+                <a href="/patient_consult">
+                    Patient Consultation →
+                </a>
+
+            </div>
+
+
+            <!-- HISTORY -->
+
+            <div class="overview-card">
+
+                <div class="overview-icon">📋</div>
+
+                <h3>Patients History</h3>
+
+                <p>Check previous medical records.</p>
+
+                <a href="/doctor_patient_history">
+                    View History →
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- DOCTOR PROFILE -->
+
+        <section class="doctor-profile">
+
+            <h2>My Profile</h2>
+
+            <div class="profile-details">
+
+                <p>
+                    <strong>Name:</strong>
+                    {{ doctor.name }}
+                </p>
+
+                <p>
+                    <strong>Specialization:</strong>
+                    {{ doctor.specialized_area or 'General Practitioner' }}
+                </p>
+
+                <p>
+                    <strong>SLMC Number:</strong>
+                    {{ doctor.slmcno }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    {{ doctor.email }}
+                </p>
+
+                <p>
+                    <strong>Phone:</strong>
+                    {{ doctor.phone_number }}
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- MOBILE MENU JAVASCRIPT -->
+
+<script>
+
+    const menuToggle = document.getElementById("menuToggle");
+
+    const doctorSidebar = document.getElementById("doctorSidebar");
+
+
+    // Toggle mobile menu
+
+    menuToggle.addEventListener("click", function () {
+
+        doctorSidebar.classList.toggle("show");
+
+        const isOpen = doctorSidebar.classList.contains("show");
+
+        menuToggle.innerHTML = isOpen ? "✕" : "☰";
+
+        menuToggle.setAttribute("aria-expanded", isOpen);
+
+    });
+
+
+    // Close menu after clicking a link
+
+    document.querySelectorAll("#doctorSidebar a").forEach(link => {
+
+        link.addEventListener("click", function () {
+
+            doctorSidebar.classList.remove("show");
+
+            menuToggle.innerHTML = "☰";
+
+            menuToggle.setAttribute("aria-expanded", "false");
+
+        });
+
+    });
+
+</script>
+
+{% endblock %}

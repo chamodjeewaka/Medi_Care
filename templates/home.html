@@ -1,0 +1,146 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Patient Dashboard{% endblock %}
+
+{% block main %}
+
+<div class="dashboard">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">✚</div>
+            <h2>Clinic Portal</h2>
+            <p>Your Health, Our Priority</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-link active">
+                <span>⌂</span> Dashboard
+            </a>
+
+            <a href="#my-details" class="nav-link">
+                <span>♙</span> My Details
+            </a>
+
+            <a href="/home/doctors" class="nav-link">
+                <span>⚕</span> Doctors
+            </a>
+
+            <a href='/patient_history/{{ patient_details[0]["id"] }}' class="nav-link">
+                <span>◷</span> My Medical History
+            </a>
+
+            <a href="/logout" class="nav-link logout">
+                <span>⇥</span> Logout
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="pulse-line">♡ ━━━━━ ♥</div>
+            <p>Stay Healthy<br>Stay Happy</p>
+        </div>
+
+    </aside>
+
+
+    <!-- Main Content -->
+    <main class="main-content" id="dashboard">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <button class="menu-btn" id="menuBtn">☰</button>
+
+            <div class="topbar-right">
+
+                <div class="profile">
+                    <div class="profile-avatar">{{patient_details[0]["name"][0]}}</div>
+                    <span>Welcome, {{patient_details[0]["name"]}}</span>
+                </div>
+            </div>
+        </header>
+
+
+        <!-- Hero Section -->
+        <section class="hero">
+
+            <div class="hero-content">
+                <p class="hero-label">PATIENT PORTAL</p>
+                <h1>Welcome Back {{ patient_details[0]["name"] }}!</h1>
+
+                <p>
+                    Your health is our top priority.
+                    Take care and stay healthy!
+                </p>
+
+
+            </div>
+
+        </section>
+
+
+        <!-- Dashboard Content -->
+        <div class="content-area">
+
+            <!-- My Details -->
+            <section class="panel lower-panel" id="my-details">
+
+                <div class="panel-header">
+                    <h3>♙ My Details</h3>
+
+                </div>
+
+                <div class="details-grid">
+                    <div>
+                        <span>Full Name</span>
+                        <h4>{{ patient_details[0]["name"] }}</h4>
+                    </div>
+
+                    <div>
+                        <span>Email Address</span>
+                        <h4>{{ patient_details[0]["email"] }}</h4>
+                    </div>
+
+                    <div>
+                        <span>Phone Number</span>
+                        <h4>{{ patient_details[0]["phone_number"] }}</h4>
+                    </div>
+
+                    <div>
+                        <span>Age</span>
+                        <h4>{{ patient_details[0]["age"] }}  yrs</h4>
+                    </div>
+
+                    <div>
+                        <span>Height</span>
+                        <h4>{{ patient_details[0]["height"] }}  cm</h4>
+                    </div>
+
+                    <div>
+                        <span>Weight</span>
+                        <h4>{{ patient_details[0]["weight"] }}  Kg</h4>
+                    </div>
+                </div>
+
+            </section>
+
+
+
+
+        </div>
+
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>♡ &nbsp; A healthier tomorrow begins with better care today.</p>
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+{% endblock %}

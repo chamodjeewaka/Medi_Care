@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" sizes="32x32">
+<title>Doctor Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0b3b45;
+    --teal: #1f7a7a;
+    --deep: #0e4f57;
+    --mist: #eaf4f3;
+    --line: #cfe0de;
+    --text: #1a2e33;
+    --muted: #5b7378;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text);
+    background: var(--mist);
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    width: min(960px, 100%);
+    min-height: 560px;
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(11, 59, 69, 0.18);
+  }
+
+  /* ---------- Image side ---------- */
+  .art {
+    position: relative;
+    background:
+      radial-gradient(circle at 30% 20%, #2c9a97 0%, transparent 55%),
+      linear-gradient(160deg, var(--teal), var(--ink));
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    color: var(--white);
+    overflow: hidden;
+  }
+  /* To use a real photo instead of the illustration, uncomment:
+  .art { background: linear-gradient(rgba(11,59,69,.55), rgba(11,59,69,.75)), url("doctor.jpg") center/cover; }
+  and remove the <svg> inside .art */
+  .art svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .art h2 {
+    position: relative;
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.9rem;
+    line-height: 1.2;
+    margin: 0 0 8px;
+  }
+  .art p {
+    position: relative;
+    margin: 0;
+    max-width: 30ch;
+    color: #cfe9e7;
+    line-height: 1.5;
+  }
+
+  /* ---------- Form side ---------- */
+  .panel {
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .panel h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .panel .sub { margin: 0 0 32px; color: var(--muted); }
+
+  .field { margin-bottom: 20px; }
+  label {
+    display: block;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+  .control { position: relative; }
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    font: inherit;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 4px rgba(31, 122, 122, 0.18);
+  }
+  #password { padding-right: 70px; }
+  .toggle {
+    position: absolute;
+    right: 8px; top: 50%;
+    transform: translateY(-50%);
+    border: 0; background: none;
+    color: var(--teal);
+    font: inherit; font-size: 0.85rem; font-weight: 600;
+    padding: 6px 8px; border-radius: 6px;
+    cursor: pointer;
+  }
+  .toggle:focus-visible { outline: 2px solid var(--teal); }
+
+  button.submit {
+    width: 100%;
+    margin-top: 8px;
+    font: inherit; font-weight: 600;
+    padding: 13px;
+    border: 0; border-radius: 10px;
+    background: var(--teal);
+    color: var(--white);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  button.submit:hover { background: var(--deep); }
+  button.submit:focus-visible { outline: 3px solid rgba(31,122,122,.4); outline-offset: 2px; }
+
+  .note { margin: 20px 0 0; font-size: 0.85rem; color: var(--muted); }
+
+  @media (max-width: 760px) {
+    .card { grid-template-columns: 1fr; }
+    .art { min-height: 200px; padding: 24px; }
+    .art h2 { font-size: 1.4rem; }
+    .art p { display: none; }
+    .panel { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <section class="art" aria-hidden="true">
+      <svg viewBox="0 0 400 560" preserveAspectRatio="xMidYMid slice" fill="none">
+        <circle cx="300" cy="110" r="150" fill="#ffffff" opacity="0.06"/>
+        <circle cx="70" cy="330" r="110" fill="#ffffff" opacity="0.05"/>
+        <!-- medical cross -->
+        <g fill="#ffffff" opacity="0.14">
+          <rect x="316" y="60" width="22" height="70" rx="6"/>
+          <rect x="292" y="84" width="70" height="22" rx="6"/>
+        </g>
+        <!-- stethoscope -->
+        <g stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M130 70 C130 160 170 200 205 240"/>
+          <path d="M270 70 C270 160 240 200 205 240"/>
+          <path d="M205 240 V310 C205 380 290 370 290 410"/>
+        </g>
+        <circle cx="130" cy="62" r="11" fill="#ffffff"/>
+        <circle cx="270" cy="62" r="11" fill="#ffffff"/>
+        <circle cx="290" cy="440" r="36" fill="#ffffff"/>
+        <circle cx="290" cy="440" r="22" fill="#1f7a7a"/>
+        <circle cx="290" cy="440" r="8" fill="#ffffff" opacity="0.7"/>
+      </svg>
+      <h2>Care starts with<br>a secure sign-in.</h2>
+      <p>Access patient records, appointments and reports in one place.</p>
+    </section>
+
+    <section class="panel">
+      <h1>Doctor login</h1>
+      <p class="sub">Sign in to continue to your dashboard.</p>
+
+      <form action="/login_doctor" method="POST">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="control">
+            <input type="password" id="password" name="password" autocomplete="current-password" required>
+            <button type="button" class="toggle" id="toggle" aria-label="Show password">Show</button>
+          </div>
+        </div>
+
+        <button type="submit" class="submit">Log in</button>
+      </form>
+
+      <p class="note">Trouble signing in? Contact your hospital administrator.</p>
+    </section>
+  </main>
+
+  <script>
+    const pw = document.getElementById("password");
+    const btn = document.getElementById("toggle");
+    btn.addEventListener("click", () => {
+      const show = pw.type === "password";
+      pw.type = show ? "text" : "password";
+      btn.textContent = show ? "Hide" : "Show";
+      btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" sizes="32x32">
+<title>Clinic Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0b3b45;
+    --teal: #1f7a7a;
+    --deep: #0e4f57;
+    --mist: #eaf4f3;
+    --line: #cfe0de;
+    --text: #1a2e33;
+    --muted: #5b7378;
+    --white: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--text);
+    background: var(--mist);
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+
+  .card {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    width: min(960px, 100%);
+    min-height: 560px;
+    background: var(--white);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(11, 59, 69, 0.18);
+  }
+
+  /* ---------- Image side ---------- */
+  .art {
+    position: relative;
+    background:
+      radial-gradient(circle at 30% 20%, #2c9a97 0%, transparent 55%),
+      linear-gradient(160deg, var(--teal), var(--ink));
+    overflow: hidden;
+  }
+  /* To use a real photo instead of the illustration, uncomment:
+  .art { background: linear-gradient(rgba(11,59,69,.45), rgba(11,59,69,.65)), url("/static/clinic.jpg") center/cover; }
+  and remove the <svg> inside .art */
+  .art svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  /* ---------- Form side ---------- */
+  .login-container {
+    padding: 56px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .login-container h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin: 0 0 6px;
+    color: var(--ink);
+  }
+  .subtitle { margin: 0 0 32px; color: var(--muted); }
+
+  form { display: flex; flex-direction: column; gap: 16px; }
+
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    font: inherit;
+    padding: 13px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input::placeholder { color: #8aa0a4; }
+  input:focus {
+    outline: none;
+    border-color: var(--teal);
+    box-shadow: 0 0 0 4px rgba(31, 122, 122, 0.18);
+  }
+  input.touched:invalid { border-color: #b3261e; }
+
+  .login-btn {
+    width: 100%;
+    margin-top: 4px;
+    font: inherit; font-weight: 600;
+    padding: 13px;
+    border: 0; border-radius: 10px;
+    background: var(--teal);
+    color: var(--white);
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .login-btn:hover { background: var(--deep); }
+  .login-btn:focus-visible { outline: 3px solid rgba(31,122,122,.4); outline-offset: 2px; }
+
+  .register-text { margin: 28px 0 10px; color: var(--muted); font-size: 0.95rem; }
+  .register-btn {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    border: 1.5px solid var(--teal);
+    border-radius: 10px;
+    color: var(--teal);
+    font-weight: 600;
+    text-decoration: none;
+    transition: background .15s, color .15s;
+  }
+  .register-btn:hover { background: var(--teal); color: var(--white); }
+  .register-btn:focus-visible { outline: 3px solid rgba(31,122,122,.4); outline-offset: 2px; }
+
+  @media (max-width: 760px) {
+    .card { grid-template-columns: 1fr; }
+    .art { min-height: 180px; }
+    .login-container { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="card">
+
+    <section class="art" aria-hidden="true">
+      <svg viewBox="0 0 400 560" preserveAspectRatio="xMidYMid slice" fill="none">
+        <circle cx="300" cy="110" r="150" fill="#ffffff" opacity="0.06"/>
+        <circle cx="70" cy="330" r="110" fill="#ffffff" opacity="0.05"/>
+        <g fill="#ffffff" opacity="0.14">
+          <rect x="316" y="60" width="22" height="70" rx="6"/>
+          <rect x="292" y="84" width="70" height="22" rx="6"/>
+        </g>
+        <g stroke="#ffffff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M130 70 C130 160 170 200 205 240"/>
+          <path d="M270 70 C270 160 240 200 205 240"/>
+          <path d="M205 240 V310 C205 380 290 370 290 410"/>
+        </g>
+        <circle cx="130" cy="62" r="11" fill="#ffffff"/>
+        <circle cx="270" cy="62" r="11" fill="#ffffff"/>
+        <circle cx="290" cy="440" r="36" fill="#ffffff"/>
+        <circle cx="290" cy="440" r="22" fill="#1f7a7a"/>
+        <circle cx="290" cy="440" r="8" fill="#ffffff" opacity="0.7"/>
+      </svg>
+    </section>
+
+    <div class="login-container">
+
+        <h1>Clinic Management System</h1>
+        <p class="subtitle">Welcome Back! Please Login</p>
+
+        <form action="/login" method="post">
+
+            <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                aria-label="Username"
+                autocomplete="username"
+                required
+            >
+
+            <input
+                type="password"
+                name="password"
+                placeholder="Password minimum 8 characters"
+                aria-label="Password"
+                autocomplete="current-password"
+                minlength="8"
+                required
+            >
+
+            <button type="submit" class="login-btn">
+                Login
+            </button>
+
+        </form>
+
+        <p class="register-text">
+            Don't have an account?
+        </p>
+
+        <a href="/register" class="register-btn">
+            Register
+        </a>
+
+    </div>
+
+</main>
+
+<script>
+  // Show the red "invalid" border only after the user has left a field
+  document.querySelectorAll("input").forEach(function (el) {
+    el.addEventListener("blur", function () { el.classList.add("touched"); });
+  });
+</script>
+
+</body>
+</html>

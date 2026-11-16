@@ -1,0 +1,802 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Create Prescription{% endblock %}
+
+{% block main %}
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+.prescription-page {
+    min-height: 100vh;
+    width: 100%;
+    padding: 35px 3%;
+    background:
+        linear-gradient(rgba(225,241,250,.87), rgba(225,241,250,.87)),
+        url("{{ url_for('static', filename='images/background.jpg') }}")
+        center/cover fixed no-repeat;
+}
+
+.prescription-container {
+    max-width: 1700px;
+    width: 100%;
+    margin: auto;
+}
+
+.page-heading {
+    margin-bottom: 25px;
+}
+
+.page-heading h1 {
+    color: #153b59;
+    font-size: 30px;
+    margin-bottom: 8px;
+}
+
+.page-heading p {
+    color: #607586;
+}
+
+.prescription-card {
+    background: rgba(255,255,255,.97);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 8px 30px rgba(20,50,75,.12);
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.section-title {
+    color: #1b4965;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.section-description {
+    color: #718394;
+    font-size: 14px;
+    margin-top: -12px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.form-group label {
+    color: #34495e;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid #d5e0e8;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    background: white;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #2185c5;
+    box-shadow: 0 0 0 3px rgba(33,133,197,.10);
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Search */
+
+.search-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 15px;
+    align-items: end;
+}
+
+.primary-btn {
+    padding: 13px 25px;
+    background: #1677b8;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 45px;
+}
+
+.primary-btn:hover {
+    background: #105e94;
+}
+
+.primary-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* Patient details */
+
+.patient-details {
+    display: none;
+}
+
+.patient-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.detail-box {
+    padding: 17px;
+    background: #f5f9fc;
+    border: 1px solid #e1eaf0;
+    border-radius: 10px;
+}
+
+.detail-label {
+    display: block;
+    color: #718394;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.detail-value {
+    color: #193e59;
+    font-size: 16px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.patient-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+}
+
+.history-btn {
+    padding: 12px 20px;
+    background: #e9f4fc;
+    color: #1677b8;
+    border: 1px solid #b8d9ee;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.history-btn:hover {
+    background: #d9edfa;
+}
+
+/* Prescription */
+
+.prescription-section {
+    display: none;
+}
+
+.prescription-section textarea {
+    margin-bottom: 0;
+}
+
+.medicine-row {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1.3fr 1fr .8fr auto;
+    gap: 14px;
+    align-items: end;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 1px solid #dce7ef;
+    border-radius: 12px;
+    background: #f8fbfd;
+}
+
+.add-medicine-btn {
+    margin-top: 5px;
+    padding: 13px 20px;
+    border: 1px dashed #2185c5;
+    border-radius: 9px;
+    background: #eef8ff;
+    color: #1475ae;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.add-medicine-btn:hover {
+    background: #dff1ff;
+}
+
+.remove-btn {
+    height: 44px;
+    padding: 0 13px;
+    border: none;
+    border-radius: 8px;
+    background: #ffe9e9;
+    color: #c0392b;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.remove-btn:hover {
+    background: #ffd5d5;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 1px solid #e5edf2;
+}
+
+.save-btn {
+    padding: 14px 35px;
+    background: #1677b8;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.save-btn:hover {
+    background: #105e94;
+}
+
+/* Messages */
+
+.search-message {
+    display: none;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.search-message.error {
+    display: block;
+    background: #fff0f0;
+    color: #b52b2b;
+}
+
+.search-message.success {
+    display: block;
+    background: #eaf8ef;
+    color: #237b43;
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+    .medicine-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .patient-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .prescription-page {
+        padding: 20px 12px;
+    }
+
+    .prescription-card {
+        padding: 20px 15px;
+    }
+
+    .search-row,
+    .patient-grid,
+    .medicine-row {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        justify-content: stretch;
+    }
+
+    .save-btn {
+        width: 100%;
+    }
+}
+</style>
+
+
+<div class="prescription-page">
+
+<div class="prescription-container">
+
+    <div class="page-heading">
+        <h1>Create Prescription</h1>
+        <p>Search for a patient, review their details and create a prescription.</p>
+    </div>
+
+
+    <!-- STEP 01: FIND PATIENT -->
+
+    <div class="prescription-card">
+
+        <h2 class="section-title">01. Find Patient</h2>
+
+        <p class="section-description">
+            Enter the patient's registered email address or phone number.
+        </p>
+
+        <form id="patientSearchForm">
+
+            <div class="search-row">
+
+                <div class="form-group">
+
+                    <label for="patient_identifier">
+                        Patient Email / Phone Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="patient_identifier"
+                        name="patient_identifier"
+                        placeholder="Enter email address or phone number"
+                        required
+                    >
+
+                </div>
+
+                <button type="submit" class="primary-btn" id="searchButton">
+                    Find Patient
+                </button>
+
+            </div>
+
+        </form>
+
+        <div id="searchMessage" class="search-message"></div>
+
+    </div>
+
+
+    <!-- STEP 02: PATIENT DETAILS -->
+
+    <div class="prescription-card patient-details" id="patientDetails">
+
+        <h2 class="section-title">02. Patient Details</h2>
+
+        <p class="section-description">
+            Patient information retrieved from the database.
+        </p>
+
+        <div class="patient-grid">
+
+            <div class="detail-box">
+                <span class="detail-label">Patient Name</span>
+                <span class="detail-value" id="patientName">-</span>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Email Address</span>
+                <span class="detail-value" id="patientEmail">-</span>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Phone Number</span>
+                <span class="detail-value" id="patientPhone">-</span>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Age</span>
+                <span class="detail-value" id="patientAge">-</span>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Height</span>
+                <span class="detail-value" id="patientHeight">-</span>
+            </div>
+
+            <div class="detail-box">
+                <span class="detail-label">Weight</span>
+                <span class="detail-value" id="patientWeight">-</span>
+            </div>
+
+        </div>
+
+        <div class="patient-actions">
+
+            <button
+                type="button"
+                class="history-btn"
+                id="historyButton"
+                onclick="viewPastHistory()"
+            >
+                View Past History
+            </button>
+
+            <button
+                type="button"
+                class="primary-btn"
+                onclick="showPrescription()"
+            >
+                Continue to Prescription →
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- STEP 03: CREATE PRESCRIPTION -->
+
+    <div class="prescription-card prescription-section"
+         id="prescriptionSection">
+
+        <h2 class="section-title">03. Create Prescription</h2>
+
+        <p class="section-description">
+            Add diagnosis details and the medicines prescribed to this patient.
+        </p>
+
+        <form method="POST"
+              action="/patient_consult"
+              id="prescriptionForm">
+
+            <input
+                type="hidden"
+                name="patient_id"
+                id="prescriptionPatientId"
+            >
+
+            <!-- Description -->
+
+            <div class="form-group" style="margin-bottom:30px;">
+
+                <label for="description">
+                    Diagnosis / Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    placeholder="Describe the patient's condition, diagnosis and treatment instructions..."
+                    required
+                ></textarea>
+
+            </div>
+
+
+            <!-- Medicines -->
+
+            <h3 class="section-title">Prescribed Medicines</h3>
+
+            <div id="medicineContainer">
+
+                <div class="medicine-row">
+
+                    <div class="form-group">
+                        <label>Medicine Name</label>
+                        <input
+                            type="text"
+                            name="medicine[]"
+                            placeholder="e.g. Tablets, eye drops, cream"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input
+                            type="text"
+                            name="dosage[]"
+                            placeholder="e.g. 1 tablet"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Frequency</label>
+                        <input
+                            type="text"
+                            name="frequency[]"
+                            placeholder="e.g. Twice daily"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <input
+                            type="text"
+                            name="duration[]"
+                            placeholder="e.g. 5 days"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input
+                            type="number"
+                            name="quantity[]"
+                            min="1"
+                            placeholder="e.g. 10"
+                            required
+                        >
+                    </div>
+
+                    <div></div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="add-medicine-btn"
+                onclick="addMedicine()"
+            >
+                + Add Another Medicine
+            </button>
+
+
+            <div class="form-actions">
+
+                <button type="submit" class="save-btn">
+                    Save Prescription
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<script>
+
+// STEP 01: SEARCH PATIENT
+
+document.getElementById("patientSearchForm").addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+        const identifier = document.getElementById(
+            "patient_identifier"
+        ).value.trim();
+
+        const message = document.getElementById("searchMessage");
+        const button = document.getElementById("searchButton");
+
+        if (!identifier) {
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Searching...";
+
+        message.className = "search-message";
+        message.style.display = "none";
+
+        document.getElementById("patientDetails").style.display = "none";
+        document.getElementById("prescriptionSection").style.display = "none";
+
+        try {
+
+            const response = await fetch("/patient_search", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    identifier: identifier
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+
+                message.textContent =
+                    data.message || "Patient not found.";
+
+                message.className = "search-message error";
+                return;
+            }
+
+            // Display patient information
+
+            document.getElementById("patientName").textContent =
+                data.patient.name || "-";
+
+            document.getElementById("patientEmail").textContent =
+                data.patient.email || "-";
+
+            document.getElementById("patientPhone").textContent =
+                data.patient.phone || "-";
+
+            document.getElementById("patientAge").textContent =
+                data.patient.age ?? "-";
+
+            document.getElementById("patientHeight").textContent =
+                data.patient.height != null
+                    ? data.patient.height + " cm"
+                    : "-";
+
+            document.getElementById("patientWeight").textContent =
+                data.patient.weight != null
+                    ? data.patient.weight + " kg"
+                    : "-";
+
+            document.getElementById("prescriptionPatientId").value =
+                data.patient.id;
+
+            document.getElementById("historyButton").dataset.patientId =
+                data.patient.id;
+
+            document.getElementById("patientDetails").style.display =
+                "block";
+
+            message.textContent = "Patient found successfully.";
+            message.className = "search-message success";
+
+        }
+
+        catch(error) {
+
+            message.textContent =
+                "Unable to connect to the server. Please try again.";
+
+            message.className = "search-message error";
+
+        }
+
+        finally {
+
+            button.disabled = false;
+            button.textContent = "Find Patient";
+
+        }
+
+    }
+);
+
+
+// STEP 02: VIEW PAST HISTORY
+
+function viewPastHistory() {
+
+    const patientId =
+        document.getElementById("historyButton").dataset.patientId;
+
+    if (!patientId) {
+        return;
+    }
+
+    window.location.href =
+        "/patient_history/" + encodeURIComponent(patientId);
+
+}
+
+
+// STEP 03: CONTINUE TO PRESCRIPTION
+
+function showPrescription() {
+
+    const patientId =
+        document.getElementById("prescriptionPatientId").value;
+
+    if (!patientId) {
+        return;
+    }
+
+    const section =
+        document.getElementById("prescriptionSection");
+
+    section.style.display = "block";
+
+    section.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+// ADD ANOTHER MEDICINE
+
+function addMedicine() {
+
+    const container =
+        document.getElementById("medicineContainer");
+
+    const row = document.createElement("div");
+
+    row.className = "medicine-row";
+
+    row.innerHTML = `
+
+        <div class="form-group">
+            <label>Medicine Name</label>
+            <input
+                type="text"
+                name="medicine[]"
+                placeholder="e.g. Tablets, eye drops, cream"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Dosage</label>
+            <input
+                type="text"
+                name="dosage[]"
+                placeholder="e.g. 1 tablet"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Frequency</label>
+            <input
+                type="text"
+                name="frequency[]"
+                placeholder="e.g. Twice daily"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Duration</label>
+            <input
+                type="text"
+                name="duration[]"
+                placeholder="e.g. 5 days"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+            <label>Quantity</label>
+            <input
+                type="number"
+                name="quantity[]"
+                min="1"
+                placeholder="e.g. 10"
+                required
+            >
+        </div>
+
+        <button
+            type="button"
+            class="remove-btn"
+            onclick="this.parentElement.remove()"
+        >
+            Remove
+        </button>
+
+    `;
+
+    container.appendChild(row);
+
+}
+
+</script>
+
+{% endblock %}

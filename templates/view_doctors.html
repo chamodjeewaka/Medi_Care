@@ -1,0 +1,121 @@
+
+{% extends "layout.html" %}
+
+{% block main %}
+
+<div class="doctors-page">
+
+    <div class="doctors-heading">
+        <h1>Our Doctors</h1>
+        <p>Meet our experienced medical professionals.</p>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="doctors-search">
+        <input
+            type="text"
+            id="doctorSearch"
+            placeholder="Search doctors by name..."
+            onkeyup="filterDoctors()"
+        >
+
+        <select id="specialtyFilter" onchange="filterDoctors()">
+            <option value="all">All Specialties</option>
+
+            {% for doctor in doctors %}
+                {% if doctor.specialized_area %}
+                    <option value="{{ doctor.specialized_area|lower }}">
+                        {{ doctor.specialized_area }}
+                    </option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Doctors List -->
+    <div class="doctors-list" id="doctorsList">
+
+        {% for doctor in doctors %}
+
+        <div class="doctor-card"
+             data-name="{{ doctor.name|lower }}"
+             data-specialty="{{ (doctor.specialized_area or 'General Practitioner')|lower }}">
+
+            <div class="doctor-image">
+                <img
+                    src="{{ url_for('static', filename='doctors/doctor'~ doctor.id~'.jpg') }}"
+                    alt="{{ doctor.name }}"
+                >
+            </div>
+
+            <div class="doctor-info">
+
+                <h2>Dr. {{ doctor.name }}</h2>
+
+                <h3>
+                    {{ doctor.specialized_area or 'General Practitioner' }}
+                </h3>
+
+                <p>
+                    <strong>SLMC Registration:</strong>
+                    {{ doctor.slmcno or 'Not available' }}
+                </p>
+
+                <p>
+                    <strong>Email:</strong>
+                    <a href="mailto:{{ doctor.email }}">
+                        {{ doctor.email or 'Not available' }}
+                    </a>
+                </p>
+
+                <p>
+                    <strong>Phone:</strong>
+                    <a href="tel:{{ doctor.phone_number }}">
+                        {{ doctor.phone_number or 'Not available' }}
+                    </a>
+                </p>
+
+            </div>
+
+        </div>
+
+        {% else %}
+
+        <p class="no-doctors">
+            No doctors available at the moment.
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<script>
+function filterDoctors() {
+
+    const search = document.getElementById("doctorSearch")
+        .value.toLowerCase();
+
+    const specialty = document.getElementById("specialtyFilter")
+        .value.toLowerCase();
+
+    const cards = document.querySelectorAll(".doctor-card");
+
+    cards.forEach(card => {
+
+        const name = card.dataset.name;
+        const doctorSpecialty = card.dataset.specialty;
+
+        const matchesName = name.includes(search);
+
+        const matchesSpecialty =
+            specialty === "all" || doctorSpecialty === specialty;
+
+        card.style.display =
+            matchesName && matchesSpecialty ? "flex" : "none";
+    });
+}
+</script>
+
+{% endblock %}

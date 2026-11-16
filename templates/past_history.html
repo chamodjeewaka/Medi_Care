@@ -1,0 +1,297 @@
+
+{% extends "layout.html" %}
+
+{% block main %}
+
+<style>
+.history-page {
+    max-width: 1450px;
+    margin: 35px auto;
+    padding: 20px;
+}
+
+.history-heading {
+    margin-bottom: 25px;
+}
+
+.history-heading h1 {
+    color: #153b5b;
+    font-size: 30px;
+}
+
+.patient-name {
+    background: linear-gradient(120deg, #123d5a, #167ca8);
+    color: white;
+    padding: 25px 30px;
+    border-radius: 14px;
+    margin-bottom: 28px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.10);
+}
+
+.patient-name small {
+    opacity: 0.8;
+    display: block;
+    margin-bottom: 7px;
+}
+
+.patient-name h2 {
+    font-size: 27px;
+    margin: 0;
+}
+
+.history-table-wrapper {
+    overflow-x: auto;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+}
+
+.history-table {
+    width: 100%;
+    min-width: 1050px;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    background: #eaf3f8;
+    color: #153b5b;
+    padding: 18px 15px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.history-table td {
+    padding: 20px 15px;
+    border-bottom: 1px solid #e8edf1;
+    vertical-align: top;
+    color: #334155;
+}
+
+.history-table tr:last-child td {
+    border-bottom: none;
+}
+
+.doctor-info strong {
+    display: block;
+    color: #1675a9;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.doctor-info p {
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.date-info {
+    font-weight: 600;
+    color: #1675a9;
+    white-space: nowrap;
+}
+
+.description {
+    min-width: 200px;
+    max-width: 300px;
+    line-height: 1.6;
+}
+
+.medicine-item {
+    background: #f3f8fb;
+    border-radius: 9px;
+    padding: 12px;
+    margin-bottom: 10px;
+    min-width: 210px;
+}
+
+.medicine-item:last-child {
+    margin-bottom: 0;
+}
+
+.medicine-item strong {
+    color: #1675a9;
+    display: block;
+    margin-bottom: 7px;
+}
+
+.medicine-item p {
+    font-size: 13px;
+    margin: 4px 0;
+}
+
+.no-history {
+    text-align: center;
+    padding: 50px 20px;
+    color: #64748b;
+}
+
+.back-btn {
+    display: inline-block;
+    text-decoration: none;
+    background: #1675a9;
+    color: white;
+    padding: 11px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.back-btn:hover {
+    background: #10577e;
+    color: white;
+}
+</style>
+
+<div class="history-page">
+
+   {% if is_doctor %}
+        <a href="{{ url_for('doctor_patient_history') }}" class="back-btn">
+        ← Back
+        </a>
+    {% else %}
+        <a href="{{ url_for('home') }}" class="back-btn">
+            ← Back
+        </a>
+    {% endif %}
+
+    <div class="history-heading">
+        <h1>Patient Medical History</h1>
+        <p>Previous consultations and prescribed medicines.</p>
+    </div>
+
+    <!-- Patient Name -->
+    <div class="patient-name">
+        <small>PATIENT MEDICAL RECORD</small>
+        <h2>{{ patient.name }}</h2>
+        <p>Patient ID: #{{ patient.id }}</p>
+    </div>
+
+    <!-- History Table -->
+    <div class="history-table-wrapper">
+
+        {% if checkings %}
+
+        <table class="history-table">
+
+            <thead>
+                <tr>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Prescription</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for checking in checkings %}
+
+                <tr>
+
+                    <!-- Doctor -->
+                    <td>
+                        <div class="doctor-info">
+
+                            <strong>{{ checking.doctor_name }}</strong>
+
+                            <p>
+                                <b>Speciality:</b>
+                                {{ checking.specialized_area }}
+                            </p>
+
+                            <p>
+                                <b>SLMC No:</b>
+                                {{ checking.slmcno }}
+                            </p>
+
+                            <p>
+                                <b>Phone:</b>
+                                {{ checking.doctor_phone }}
+                            </p>
+
+                            <p>
+                                <b>Email:</b>
+                                {{ checking.doctor_email }}
+                            </p>
+
+                        </div>
+                    </td>
+
+                    <!-- Date -->
+                    <td>
+                        <div class="date-info">
+                            {{ checking.date }}
+                        </div>
+                        <small>{{ checking.time }}</small>
+                    </td>
+
+                    <!-- Description -->
+                    <td>
+                        <div class="description">
+                            {{ checking.description }}
+                        </div>
+                    </td>
+
+                    <!-- Prescription -->
+                    <td>
+
+                        {% if checking.medicines %}
+
+                            {% for med in checking.medicines %}
+
+                            <div class="medicine-item">
+
+                                <strong>{{ med.medicine }}</strong>
+
+                                <p>
+                                    <b>Dosage:</b>
+                                    {{ med.dosage }}
+                                </p>
+
+                                <p>
+                                    <b>Frequency:</b>
+                                    {{ med.frequency }}
+                                </p>
+
+                                <p>
+                                    <b>Duration:</b>
+                                    {{ med.duration }}
+                                </p>
+
+                                <p>
+                                    <b>Quantity:</b>
+                                    {{ med.quantity }}
+                                </p>
+
+                            </div>
+
+                            {% endfor %}
+
+                        {% else %}
+
+                            <p>No prescription recorded.</p>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="no-history">
+            <h2>No Previous History</h2>
+            <p>This patient has no previous consultations.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

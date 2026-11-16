@@ -1,0 +1,227 @@
+
+{% extends "layout.html" %}
+
+{% block main %}
+
+<style>
+.patient-history-page {
+    max-width: 1400px;
+    margin: 35px auto;
+    padding: 20px;
+}
+
+.page-heading {
+    margin-bottom: 25px;
+}
+
+.page-heading h1 {
+    color: #153b5b;
+    font-size: 30px;
+}
+
+.page-heading p {
+    color: #64748b;
+}
+
+.doctor-banner {
+    background: linear-gradient(120deg, #123d5a, #1685b7);
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 18px rgba(0,0,0,0.1);
+}
+
+.doctor-banner small {
+    opacity: 0.8;
+}
+
+.doctor-banner h2 {
+    font-size: 28px;
+    margin: 8px 0;
+}
+
+.patient-count {
+    display: inline-block;
+    background: rgba(255,255,255,0.17);
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-top: 10px;
+}
+
+.patient-table-wrapper {
+    overflow-x: auto;
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.07);
+}
+
+.patient-table {
+    width: 100%;
+    min-width: 1050px;
+    border-collapse: collapse;
+}
+
+.patient-table th {
+    background: #eaf3f8;
+    color: #153b5b;
+    padding: 17px 14px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.patient-table td {
+    padding: 17px 14px;
+    border-bottom: 1px solid #e8edf1;
+    color: #334155;
+    font-size: 14px;
+}
+
+.patient-table tr:hover {
+    background: #f8fbfd;
+}
+
+.patient-name {
+    font-weight: 700;
+    color: #1675a9;
+}
+
+.patient-id {
+    color: #94a3b8;
+    font-size: 12px;
+}
+
+.view-history-btn {
+    display: inline-block;
+    background: #1675a9;
+    color: white;
+    text-decoration: none;
+    padding: 9px 15px;
+    border-radius: 7px;
+    white-space: nowrap;
+}
+
+.view-history-btn:hover {
+    background: #10577e;
+    color: white;
+}
+
+.no-patients {
+    text-align: center;
+    padding: 55px 20px;
+    color: #64748b;
+}
+
+@media(max-width: 600px) {
+    .doctor-banner {
+        padding: 22px;
+    }
+
+    .doctor-banner h2 {
+        font-size: 23px;
+    }
+}
+</style>
+
+<div class="patient-history-page">
+
+    <div class="page-heading">
+        <h1>Patient History</h1>
+        <p>Manage and view your patients' medical records.</p>
+    </div>
+
+    <!-- Doctor Name -->
+    <div class="doctor-banner">
+
+        <small>DOCTOR'S PATIENT RECORDS</small>
+
+        <h2>Dr. {{ doctor.name }}</h2>
+
+        <p>
+            Your previously consulted patients and their medical records.
+        </p>
+
+        <div class="patient-count">
+            Total Patients: {{ patients|length }}
+        </div>
+
+    </div>
+
+    <!-- Patient Table -->
+    <div class="patient-table-wrapper">
+
+        {% if patients %}
+
+        <table class="patient-table">
+
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Age</th>
+                    <th>Height</th>
+                    <th>Weight</th>
+                    <th>Phone Number</th>
+                    <th>Email</th>
+                    <th>Last Consultation</th>
+                    <th>History</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for patient in patients %}
+
+                <tr>
+
+                    <td>
+                        <div class="patient-name">
+                            {{ patient.name }}
+                        </div>
+
+                        <div class="patient-id">
+                            Patient ID: #{{ patient.id }}
+                        </div>
+                    </td>
+
+                    <td>{{ patient.age }}</td>
+
+                    <td>{{ patient.height }}</td>
+
+                    <td>{{ patient.weight }}</td>
+
+                    <td>{{ patient.phone_number }}</td>
+
+                    <td>{{ patient.email }}</td>
+
+                    <td>{{ patient.last_consultation }}</td>
+
+                    <td>
+                        <a
+                            href="/patient_history/{{ patient.id }}"
+                            class="view-history-btn">
+                            View History
+                        </a>
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="no-patients">
+            <h2>No Patients Yet</h2>
+            <p>You haven't recorded any patient consultations yet.</p>
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
