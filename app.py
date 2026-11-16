@@ -5,9 +5,12 @@ from flask import Flask, flash, redirect, render_template, request, session
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from zoneinfo import ZoneInfo
+import os
+
 
 app = Flask(__name__)
-app.secret_key = "my_clinic_secret_key_123"
+
+app.secret_key = os.environ["SECRET_KEY"]
 
 db = SQL("sqlite:///data.db")
 
